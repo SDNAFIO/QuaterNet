@@ -80,6 +80,7 @@ class PoseNetwork:
             for epoch in range(n_epochs):
                 batch_loss = 0.0
                 N = 0
+                # batch_in is in quaternions, batch_out is in euler angles
                 for batch_in, batch_out in self._prepare_next_batch_impl(batch_size, dataset, target_length, sequences_train):
                     # Pick a random chunk from each sequence
                     inputs = torch.from_numpy(batch_in)

@@ -16,6 +16,7 @@ from urllib.request import urlretrieve
 from glob import glob
 from common.quaternion import expmap_to_quaternion, qfix
 from shutil import rmtree
+from common.quaternion import *
 
 if __name__ == '__main__':
     output_directory = 'datasets'
@@ -30,7 +31,7 @@ if __name__ == '__main__':
             raise
 
     output_file_path = output_directory + '/' + output_filename
-    if os.path.exists(output_file_path + '.npz'):
+    if False: #os.path.exists(output_file_path + '.npz'):
         print('The dataset already exists at', output_file_path + '.npz')
     else:   
         # Download Human3.6M dataset in exponential map format
@@ -59,6 +60,7 @@ if __name__ == '__main__':
         out_rot = []
         out_subjects = []
         out_actions = []
+        out_expmap = []
 
         print('Converting dataset...')
         subjects = sorted(glob(output_directory + '/h3.6m/dataset/*'))
@@ -75,20 +77,22 @@ if __name__ == '__main__':
                 quat = expmap_to_quaternion(-data)
                 quat = qfix(quat)
 
-                out_pos.append(np.zeros((quat.shape[0], 3))) # No trajectory for H3.6M
+                out_pos.append(np.zeros((quat.shape[0], 3)))  # No trajectory for H3.6M
                 out_rot.append(quat)
                 tokens = re.split('\/|\.', action_filename.replace('\\', '/'))
                 subject_name = tokens[-3]
                 out_subjects.append(subject_name)
                 action_name = tokens[-2]
                 out_actions.append(action_name)
+                out_expmap.append(data)
 
         print('Saving...')
         np.savez_compressed(output_file_path,
                 trajectories=out_pos,
                 rotations=out_rot,
                 subjects=out_subjects,
-                actions=out_actions)
+                actions=out_actions,
+                original_expmap=out_expmap)
 
         rmtree(output_directory + '/h3.6m') # Clean up
         print('Done.')

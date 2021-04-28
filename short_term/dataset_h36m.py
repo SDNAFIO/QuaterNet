@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import os.path
 import pickle
+import os
 from glob import glob
 from common.quaternion import expmap_to_quaternion, qfix
 from common.mocap_dataset import MocapDataset
@@ -27,7 +28,7 @@ else:
     subjects_valid = []
     subjects_test = ['S5']
 
-dataset_path = '/home/bic/fast-data/quaternet/dataset_h36m.npz'
+dataset_path = os.path.join(os.getenv('DATA_DIR'), 'dataset_h36m.npz')
 short_term_weights_path = 'weights_short_term.bin'
 
 skeleton_h36m = Skeleton(offsets=[

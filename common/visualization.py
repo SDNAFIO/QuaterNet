@@ -35,7 +35,7 @@ def render_animation(data, skeleton, fps, output='interactive', bitrate=1000):
     ax.set_xlim3d([-radius/2, radius/2])
     ax.set_zlim3d([0, radius])
     ax.set_ylim3d([-radius/2, radius/2])
-    ax.set_aspect('equal')
+    ax.set_aspect('auto')
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.set_zticklabels([])
@@ -68,8 +68,8 @@ def render_animation(data, skeleton, fps, output='interactive', bitrate=1000):
                         [positions_world[i, y], positions_world[skeleton_parents[i], y]],
                         [positions_world[i, z], positions_world[skeleton_parents[i], z]], zdir='y', c=col))
             else:
-                lines[i-1][0].set_xdata([positions_world[i, x], positions_world[skeleton_parents[i], x]])
-                lines[i-1][0].set_ydata([positions_world[i, y], positions_world[skeleton_parents[i], y]])
+                lines[i-1][0].set_xdata(np.array([positions_world[i, x], positions_world[skeleton_parents[i], x]]))
+                lines[i-1][0].set_ydata(np.array([positions_world[i, y], positions_world[skeleton_parents[i], y]]))
                 lines[i-1][0].set_3d_properties([positions_world[i, z], positions_world[skeleton_parents[i], z]], zdir='y')
         l = max(frame-draw_offset, 0)
         r = min(frame+draw_offset, trajectory.shape[0])
@@ -81,7 +81,7 @@ def render_animation(data, skeleton, fps, output='interactive', bitrate=1000):
             plt.close('all')
 
     fig.tight_layout()
-    anim = FuncAnimation(fig, update, frames=np.arange(0, data.shape[0]), interval=1000/fps, repeat=False)
+    anim = FuncAnimation(fig, update, frames=np.arange(0, data.shape[0]), interval=1000/fps, repeat=True)
     if output == 'interactive':
         plt.show()
         return anim
